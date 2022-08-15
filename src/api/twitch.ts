@@ -7,11 +7,11 @@ const authProvider = new StaticAuthProvider(
 );
 export const twitchClient = new ChatClient({
     authProvider,
-	channels: [process.env.TWITCH_CHAT || ""]
+    channels: [process.env.TWITCH_CHAT || ""],
 });
 
 twitchClient.onJoin((channel) => {
-	console.log("Успешно подключен к чату: " + channel);
+    console.log("Успешно подключен к чату: " + channel);
 });
 
 twitchClient.onMessage((channel, user, message) => {
