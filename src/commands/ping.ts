@@ -1,11 +1,15 @@
-import { BaseCommand } from "./baseCommand";
+import { ChatClient } from "@twurple/chat";
+import { BaseCommand } from "../client/BaseCommand";
+import ChatMessage from "../client/ChatMessage";
 
-export class PingCommand extends BaseCommand {
-    constructor() {
-        super("ping");
+export default class PingCommand extends BaseCommand {
+    constructor(client: ChatClient) {
+        super(client, {
+            name: "ping",
+        });
     }
 
-	public run(): void {
-	    
-	}
+    async run(msg: ChatMessage): Promise<void> {
+        msg.reply("pong!");
+    }
 }

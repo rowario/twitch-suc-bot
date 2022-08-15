@@ -4,6 +4,7 @@ declare global {
     namespace NodeJS {
         interface ProcessEnv {
             DATABASE_URL: string;
+            PREFIX: string;
             TWITCH_CHAT: string;
             TWITCH_TOKEN: string;
             TWITCH_REFRESH_TOKEN: string;
