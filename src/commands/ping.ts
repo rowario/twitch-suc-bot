@@ -6,6 +6,7 @@ export default class PingCommand extends BaseCommand {
     constructor(client: ChatClient) {
         super(client, {
             name: "ping",
+            aliases: ["пинг"],
         });
     }
 
