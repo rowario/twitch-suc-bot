@@ -1,0 +1,25 @@
+{
+    "name": "mine-suk-bot",
+    "version": "1.0.0",
+    "description": "",
+    "main": "./dist/index.js",
+    "scripts": {
+        "start": "node ./dist/index.js",
+        "dev": "nodemon ./src/index.ts"
+    },
+    "author": "Rowario",
+    "license": "ISC",
+    "devDependencies": {
+        "@types/dotenv": "^8.2.0",
+        "@types/node": "^18.7.3",
+        "nodemon": "^2.0.19",
+        "prisma": "^4.2.1",
+        "ts-node": "^10.9.1"
+    },
+    "dependencies": {
+        "@twurple/auth": "^5.2.1",
+        "@twurple/chat": "^5.2.1",
+        "dotenv": "^16.0.1",
+        "rcon-client": "^4.2.3"
+    }
+}
