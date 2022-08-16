@@ -10,8 +10,8 @@ export class BaseCommand {
     public name: string;
     public aliases: string[];
     public constructor(
-        private client: ChatClient,
-        private options: CommandOptions
+        public client: ChatClient,
+        public options: CommandOptions
     ) {
         this.name = options.name;
         this.aliases = options.aliases;

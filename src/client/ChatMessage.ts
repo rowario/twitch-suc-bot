@@ -3,9 +3,9 @@ import { ChatClient } from "@twurple/chat";
 export default class ChatMessage {
     constructor(
         public client: ChatClient,
-        private message: string,
-        private channel: string,
-        private user: string
+        public message: string,
+        public channel: string,
+        public user: string
     ) {}
 
     async reply(text: string) {

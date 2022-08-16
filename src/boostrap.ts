@@ -1,11 +1,11 @@
-import { loadCommands, twitchClient } from "./api/twitch";
+import { client } from "./api/twitch";
 import { rconClient } from "./api/rcon";
 
 export const bootstrap = async () => {
-    await twitchClient
+    await client
         .connect()
         .then(() => {
-            loadCommands("../commands");
+            client.loadCommands();
         })
         .catch((error) => {
             console.log(`Произошла критичиская ошибка: `, error);
