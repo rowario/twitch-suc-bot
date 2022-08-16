@@ -24,6 +24,7 @@ export default class BindCommand extends BaseCommand {
                 return msg.reply("укажите action!");
             }
 
+
             if (!actions.includes(action)) {
                 return msg.reply("такой action не существует!");
             }

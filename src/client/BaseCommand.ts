@@ -12,6 +12,7 @@ export interface CommandOptions {
 export class BaseCommand {
     public name: string;
     public aliases: string[];
+    public redeemId: string | null = null;
     public constructor(public client: Client, public options: CommandOptions) {
         this.name = options.name;
         this.aliases = options.aliases;

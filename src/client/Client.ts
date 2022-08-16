@@ -1,4 +1,4 @@
-import { ChatClient, ChatClientOptions, ChatUser } from "@twurple/chat";
+import { ChatClient, ChatClientOptions } from "@twurple/chat";
 import { BaseCommand } from "./BaseCommand";
 import ChatMessage from "./ChatMessage";
 import { readdirSync } from "fs";
