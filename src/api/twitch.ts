@@ -10,7 +10,7 @@ const authProvider = new StaticAuthProvider(
 export const client = new Client({
     authProvider,
     channels: [process.env.TWITCH_CHAT || ""],
-    prefix: "!",
+    prefix: process.env.PREFIX || "!",
     folder: "../commands",
 });
 

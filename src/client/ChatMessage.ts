@@ -8,7 +8,11 @@ export default class ChatMessage {
         public user: string
     ) {}
 
-    async reply(text: string) {
-        this.client.say(this.channel, `@${this.user}, ${text}`);
+    async reply(text: string): Promise<void> {
+        await this.client.say(this.channel, `@${this.user}, ${text}`);
+    }
+
+    async say(text: string): Promise<void> {
+        await this.client.say(this.channel, text);
     }
 }

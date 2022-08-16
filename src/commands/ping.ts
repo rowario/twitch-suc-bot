@@ -11,6 +11,6 @@ export default class PingCommand extends BaseCommand {
     }
 
     async run(msg: ChatMessage): Promise<void> {
-        msg.reply("pong!");
+        await msg.reply("pong!");
     }
 }
