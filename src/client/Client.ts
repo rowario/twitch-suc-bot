@@ -1,4 +1,4 @@
-import { ChatClient, ChatClientOptions } from "@twurple/chat";
+import { ChatClient, ChatClientOptions, ChatUser } from "@twurple/chat";
 import { BaseCommand } from "./BaseCommand";
 import ChatMessage from "./ChatMessage";
 import { readdirSync } from "fs";
@@ -36,7 +36,7 @@ export default class Client extends ChatClient {
     }
 
     async tryRunCommand(msg: ChatMessage): Promise<void> {
-        const [possibleCommand] = msg.message.split(" ");
+        const [possibleCommand] = msg.originalText.split(" ");
         if (possibleCommand.startsWith(this.options.prefix)) {
             const parsed = possibleCommand.replace(this.options.prefix, "");
             const command = this.commands.find((x) => {
@@ -48,7 +48,7 @@ export default class Client extends ChatClient {
                     return x;
                 }
             });
-            if (command) {
+            if (command && command.checkAccess(msg)) {
                 await command.run(msg);
             }
         }

@@ -7,5 +7,5 @@ export const rconClient = new Rcon({
 });
 
 rconClient.on("authenticated", () => {
-    rconClient.send("say Ну привет");
+    rconClient.send("say Бот успешно подключился по RCON!");
 });

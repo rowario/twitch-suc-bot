@@ -9,3 +9,11 @@ datasource db {
     provider = "sqlite"
     url      = env("DATABASE_URL")
 }
+
+model Redemption {
+    id        Int      @id() @default(autoincrement())
+    rewardId  String   @unique()
+    action    String   @unique()
+    createdAt DateTime @default(now())
+    updatedAt DateTime @default(now()) @updatedAt()
+}

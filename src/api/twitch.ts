@@ -18,13 +18,13 @@ client.onJoin((channel) => {
     console.log("Успешно подключен к чату: " + channel);
 });
 
-client.onMessage((channel, user, message) => {
+client.onMessage(async (channel, _, text, message) => {
     try {
-        const msg = new ChatMessage(client, message, channel, user);
-        client.tryRunCommand(msg);
+        const msg = new ChatMessage(client, text, channel, message);
+        await client.tryRunCommand(msg);
     } catch (error) {
         console.log(
-            `Получена ошибка при попытке обработать сообщение: "${message}" | Ошибка: ${error}`
+            `Получена ошибка при попытке обработать сообщение: "${text}" | Ошибка: ${error}`
         );
     }
 });

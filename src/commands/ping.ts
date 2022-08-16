@@ -1,9 +1,9 @@
-import { ChatClient } from "@twurple/chat";
 import { BaseCommand } from "../client/BaseCommand";
 import ChatMessage from "../client/ChatMessage";
+import Client from "../client/Client";
 
 export default class PingCommand extends BaseCommand {
-    constructor(client: ChatClient) {
+    constructor(client: Client) {
         super(client, {
             name: "ping",
             aliases: ["пинг"],
