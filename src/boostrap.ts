@@ -1,16 +1,14 @@
-import { client } from "./api/twitch";
 import { rconClient } from "./api/rcon";
+import { startTwitch } from "./api/twitch";
+import { app } from "./common/authServer";
 
 export const bootstrap = async () => {
-    await client
-        .connect()
-        .then(() => {
-            client.loadCommands();
-        })
-        .catch((error) => {
-            console.log(`Произошла критичиская ошибка: `, error);
-            process.exit(0);
-        });
+    const started = await startTwitch();
+    if (!started) {
+        app.listen(16057);
+		console.log("Авторизуйтесь с двух аккаунтов и перезапустите бота!");
+		return;
+    }
     await rconClient.connect().catch(() => {
         console.log("Не удалось подключиться к RCON серверу!");
     });

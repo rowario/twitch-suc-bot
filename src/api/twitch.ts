@@ -1,45 +1,62 @@
-import { StaticAuthProvider } from "@twurple/auth";
 import { PubSubClient } from "@twurple/pubsub";
 import ChatMessage from "../client/ChatMessage";
 import Client from "../client/Client";
+import { getAuthProvider, getAuthLink } from "../common/auth";
 
-const authProvider = new StaticAuthProvider(
-    process.env.TWITCH_CLIENT_ID || "",
-    process.env.TWITCH_TOKEN || ""
-);
+export const startTwitch = async (): Promise<boolean> => {
+    const [userAuthProvider, botAuthProvider] = await Promise.all([
+        getAuthProvider("user"),
+        getAuthProvider("bot"),
+    ]);
 
-const pubSubAuth = new StaticAuthProvider(
-    process.env.TWITCH_CLIENT_ID || "",
-    process.env.TWITCH_PUBSUB_TOKEN || ""
-);
+    if (!userAuthProvider || !botAuthProvider) {
+        if (!userAuthProvider) {
+            console.log(
+                `Пользовательский токен не установлен, для установки перейдите по ссылке ниже:`
+            );
+            console.log(getAuthLink("user"));
+        }
+        if (!botAuthProvider) {
+            console.log(
+                `Бот токен не установлен, для установки перейдите по ссылке ниже:`
+            );
+            console.log(getAuthLink("bot"));
+        }
+        return false;
+    }
 
-const pubSubClient = new PubSubClient();
+    const chatClient = new Client({
+        authProvider: botAuthProvider,
+        channels: [process.env.TWITCH_CHAT || ""],
+        prefix: process.env.PREFIX || "!",
+        folder: "../commands",
+    });
 
-export const client = new Client({
-    authProvider,
-    channels: [process.env.TWITCH_CHAT || ""],
-    prefix: process.env.PREFIX || "!",
-    folder: "../commands",
-});
+    chatClient.onMessage(async (channel, _, text, message) => {
+        try {
+            const msg = new ChatMessage(chatClient, text, channel, message);
+            await chatClient.tryRunCommand(msg);
+        } catch (error) {
+            console.log(
+                `Получена ошибка при попытке обработать сообщение: "${text}" | Ошибка: ${error}`
+            );
+        }
+    });
 
-client.onJoin(async (channel) => {
-    console.log("Успешно подключен к чату: " + channel);
+    await chatClient
+        .connect()
+        .then(() => {
+            chatClient.loadCommands();
+        })
+        .catch(() => {
+            console.log("Не удалось подключиться к серверу twitch!");
+        });
 
-    const userId = await pubSubClient.registerUserListener(pubSubAuth);
-    console.log(userId);
-    const res = await pubSubClient.onRedemption(userId, (message) => {
+    const pubSubClient = new PubSubClient();
+    const userId = await pubSubClient.registerUserListener(userAuthProvider);
+    await pubSubClient.onRedemption(userId, (message) => {
         console.log(message.rewardId);
     });
-    console.log(res);
-});
 
-client.onMessage(async (channel, _, text, message) => {
-    try {
-        const msg = new ChatMessage(client, text, channel, message);
-        await client.tryRunCommand(msg);
-    } catch (error) {
-        console.log(
-            `Получена ошибка при попытке обработать сообщение: "${text}" | Ошибка: ${error}`
-        );
-    }
-});
+    return true;
+};
