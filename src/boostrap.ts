@@ -1,13 +1,12 @@
 import { rconClient } from "./api/rcon";
-import { startTwitch } from "./api/twitch";
+import { loadTwitchTokens } from "./api/twitch";
 import { app } from "./common/authServer";
 
 export const bootstrap = async () => {
-    const started = await startTwitch();
-    if (!started) {
+    if (!(await loadTwitchTokens())) {
         app.listen(16057);
-		console.log("Авторизуйтесь с двух аккаунтов и перезапустите бота!");
-		return;
+        console.log("Авторизуйтесь с двух аккаунтов и перезапустите бота!");
+        return;
     }
     await rconClient.connect().catch(() => {
         console.log("Не удалось подключиться к RCON серверу!");

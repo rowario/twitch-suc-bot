@@ -7,7 +7,7 @@ import { readFile, writeFile } from "fs/promises";
 import { TokenType } from "../types/common";
 
 const clientId = process.env.TWITCH_CLIENT_ID || "";
-const clientSecret = process.env.TWITCH_CLIENT_ID || "";
+const clientSecret = process.env.TWITCH_CLIENT_SECRET || "";
 
 export const getAuthProvider = async (
     type: TokenType

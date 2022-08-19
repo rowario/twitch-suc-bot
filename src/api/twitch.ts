@@ -3,7 +3,26 @@ import ChatMessage from "../client/ChatMessage";
 import Client from "../client/Client";
 import { getAuthProvider, getAuthLink } from "../common/auth";
 
-export const startTwitch = async (): Promise<boolean> => {
+let chatClient: Client;
+let pubSubClient: PubSubClient;
+
+export const getChatClient = async (): Promise<Client> => {
+    if (!chatClient) {
+        await loadTwitchTokens();
+    }
+
+    return chatClient;
+};
+
+export const getPubSubClient = async (): Promise<PubSubClient> => {
+    if (!pubSubClient) {
+        await loadTwitchTokens();
+    }
+
+    return pubSubClient;
+};
+
+export const loadTwitchTokens = async (): Promise<boolean> => {
     const [userAuthProvider, botAuthProvider] = await Promise.all([
         getAuthProvider("user"),
         getAuthProvider("bot"),
@@ -25,7 +44,7 @@ export const startTwitch = async (): Promise<boolean> => {
         return false;
     }
 
-    const chatClient = new Client({
+    chatClient = new Client({
         authProvider: botAuthProvider,
         channels: [process.env.TWITCH_CHAT || ""],
         prefix: process.env.PREFIX || "!",
@@ -52,9 +71,8 @@ export const startTwitch = async (): Promise<boolean> => {
             console.log("Не удалось подключиться к серверу twitch!");
         });
 
-    const pubSubClient = new PubSubClient();
-    const userId = await pubSubClient.registerUserListener(userAuthProvider);
-    await pubSubClient.onRedemption(userId, (message) => {
+    const userId = await chatClient.registerPubSubListener(userAuthProvider);
+    await chatClient.onRedemption(userId, (message) => {
         console.log(message.rewardId);
     });
 

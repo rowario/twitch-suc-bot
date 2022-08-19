@@ -27,7 +27,7 @@ export class BaseCommand {
         if (this.options.broadcasterOnly && !msg.user.isBroadcaster) {
             return false;
         }
-        if (this.options.broadcasterOnly && !msg.message.isRedemption) {
+        if (this.options.redemptionOnly && !msg.message.isRedemption) {
             return false;
         }
         return true;
