@@ -1,6 +1,7 @@
 import { BaseCommand } from "../client/BaseCommand";
 import ChatMessage from "../client/ChatMessage";
 import Client from "../client/Client";
+import RewardCollector from "../client/RewardCollector";
 
 const actions = ["spawn_mob", "increase_hp", "decrease_hp"];
 
@@ -25,12 +26,9 @@ export default class BindCommand extends BaseCommand {
 
         console.log("fsdfds");
 
-        this.client.createCollector(
-            msg.channel,
-            msg.user.userId,
-            (rewardId) => {
-                console.log("from collector:", rewardId);
-            }
-        );
+        const collector = new RewardCollector(this.client, msg.user.userId);
+        collector.start(msg.user.userName, (rewardId) => {
+            console.log("from collector:", rewardId);
+        });
     }
 }

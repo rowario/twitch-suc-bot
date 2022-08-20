@@ -24,42 +24,6 @@ export default class Client extends ChatClient {
         this.pubSubClient = new PubSubClient();
     }
 
-    // TODO: move to class
-    async createCollector(
-        channel: string,
-        user: string,
-        callback: (rewardId: string) => void,
-        time: number = 30000
-    ): Promise<void> {
-        let inWork = true;
-        const pubSubListener = await this.pubSubClient.onRedemption(
-            user,
-            async (message) => {
-                if (message.userId !== user) return;
-                await stopCollector();
-                callback(message.rewardId);
-            }
-        );
-        const messageListener = this.onMessage(
-            async (cChannel, cUser, _, cMessage) => {
-                if (cChannel !== channel) return;
-                if (cUser !== user) return;
-                if (!cMessage.tags.has("custom-reward-id")) return;
-                const rewardId = cMessage.tags.get("custom-reward-id");
-                if (!rewardId) return;
-                await stopCollector();
-                callback(rewardId);
-            }
-        );
-        async function stopCollector() {
-            await pubSubListener.remove();
-            messageListener.unbind();
-        }
-        setTimeout(() => {
-            if (inWork) stopCollector();
-        }, time);
-    }
-
     public async onRedemption(
         user: string,
         callback: (message: PubSubRedemptionMessage) => void
