@@ -50,7 +50,6 @@ export default class Client extends ChatClient {
             if (file.prototype instanceof BaseCommand) {
                 const command: BaseCommand = new file(this);
                 this.commands.push(command);
-                console.log(command);
                 console.log(`Комманда "${command.name}" подключена!`);
             } else {
                 console.log(`Файл "${fileName}" не является коммандой :(`);

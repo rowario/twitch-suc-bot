@@ -41,3 +41,21 @@ export const deleteRedemption = async (id: number): Promise<void> => {
         },
     });
 };
+
+export const deleteByRewardOrAction = async (
+    rewardId: string,
+    action: RedemAction
+): Promise<void> => {
+    await prisma.redemption.deleteMany({
+        where: {
+            OR: [
+                {
+                    rewardId,
+                },
+                {
+                    action,
+                },
+            ],
+        },
+    });
+};

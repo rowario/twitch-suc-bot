@@ -1,26 +1,6 @@
-import { PubSubClient } from "@twurple/pubsub";
 import ChatMessage from "../client/ChatMessage";
 import Client from "../client/Client";
 import { getAuthProvider, getAuthLink } from "../common/auth";
-
-let chatClient: Client;
-let pubSubClient: PubSubClient;
-
-export const getChatClient = async (): Promise<Client> => {
-    if (!chatClient) {
-        await loadTwitchTokens();
-    }
-
-    return chatClient;
-};
-
-export const getPubSubClient = async (): Promise<PubSubClient> => {
-    if (!pubSubClient) {
-        await loadTwitchTokens();
-    }
-
-    return pubSubClient;
-};
 
 export const loadTwitchTokens = async (): Promise<boolean> => {
     const [userAuthProvider, botAuthProvider] = await Promise.all([
@@ -44,7 +24,7 @@ export const loadTwitchTokens = async (): Promise<boolean> => {
         return false;
     }
 
-    chatClient = new Client({
+    const chatClient = new Client({
         authProvider: botAuthProvider,
         channels: [process.env.TWITCH_CHAT || ""],
         prefix: process.env.PREFIX || "!",
@@ -71,10 +51,7 @@ export const loadTwitchTokens = async (): Promise<boolean> => {
             console.log("Не удалось подключиться к серверу twitch!");
         });
 
-    const userId = await chatClient.registerPubSubListener(userAuthProvider);
-    await chatClient.onRedemption(userId, (message) => {
-        console.log(message.rewardId);
-    });
+    await chatClient.registerPubSubListener(userAuthProvider);
 
     return true;
 };
