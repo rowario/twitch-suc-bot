@@ -2,13 +2,12 @@ import { BaseCommand } from "../client/BaseCommand";
 import ChatMessage from "../client/ChatMessage";
 import Client from "../client/Client";
 import RewardCollector from "../client/RewardCollector";
+import { actions } from "../common/constants";
 import {
     createRedemption,
     deleteByRewardOrAction,
 } from "../repositories/redemptions";
 import { RedemAction } from "../types/common";
-
-const actions = ["spawn_mob", "increase_hp", "decrease_hp"];
 
 export default class BindCommand extends BaseCommand {
     constructor(public client: Client) {
@@ -40,7 +39,7 @@ export default class BindCommand extends BaseCommand {
             await deleteByRewardOrAction(rewardId, action);
             await createRedemption(rewardId, action as RedemAction);
 
-            msg.say("Действие успешно привязан к награде!");
+            msg.say("Действие успешно привязано к награде!");
         });
 
         msg.reply("Используйте награду для привязки ее к действию!");

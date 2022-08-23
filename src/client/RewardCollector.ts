@@ -13,6 +13,7 @@ export default class RewardCollector {
     ) {}
 
     async start(username: string, callback: (rewardId: string) => void) {
+        this.client.isActiveHandlers = false;
         this.pubSubListener = await this.client.onRedemption(
             this.userId,
             (message) => {
@@ -39,6 +40,7 @@ export default class RewardCollector {
     async stop() {
         if (this.pubSubListener) await this.pubSubListener.remove();
         if (this.messageListener) this.messageListener.unbind();
+        this.client.isActiveHandlers = true;
         this.inWork = false;
     }
 }

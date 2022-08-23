@@ -28,7 +28,8 @@ export const loadTwitchTokens = async (): Promise<boolean> => {
         authProvider: botAuthProvider,
         channels: [process.env.TWITCH_CHAT || ""],
         prefix: process.env.PREFIX || "!",
-        folder: "../commands",
+        commandsFolder: "../commands",
+        actionsFolder: "../actions",
     });
 
     chatClient.onMessage(async (channel, _, text, message) => {
@@ -44,14 +45,19 @@ export const loadTwitchTokens = async (): Promise<boolean> => {
 
     await chatClient
         .connect()
-        .then(() => {
-            chatClient.loadCommands();
+        .then(async () => {
+            await chatClient.loadCommands();
+            await chatClient.loadActions();
         })
         .catch(() => {
             console.log("Не удалось подключиться к серверу twitch!");
         });
 
-    await chatClient.registerPubSubListener(userAuthProvider);
+    const userId = await chatClient.registerPubSubListener(userAuthProvider);
+    chatClient.onRedemption(userId, (message) => {
+        console.log(JSON.stringify(message.rewardId));
+        chatClient.tryRunAction(message.rewardId);
+    });
 
     return true;
 };
