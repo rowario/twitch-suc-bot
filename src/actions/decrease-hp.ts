@@ -12,6 +12,6 @@ export default class DecreaseHp extends BaseAction {
     async run(): Promise<void> {
         const username = process.env.MINECRAFT_USERNAME || "";
         if (username) return;
-        rconClient.send(`effect give ${username} minecraft:instant_damage 1`);
+        rconClient.send(`scoreboard players set ${username} hp_dmg 4`);
     }
 }
