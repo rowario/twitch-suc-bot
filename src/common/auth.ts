@@ -9,31 +9,41 @@ import { TokenType } from "../types/common";
 const clientId = process.env.TWITCH_CLIENT_ID || "";
 const clientSecret = process.env.TWITCH_CLIENT_SECRET || "";
 
+const authMap = new Map<TokenType, AuthProvider>();
+
 export const getAuthProvider = async (
     type: TokenType
-): Promise<AuthProvider | false> => {
+): Promise<AuthProvider | undefined> => {
     try {
+        if (authMap.has(type)) {
+            return authMap.get(type);
+        }
         const authToken = await readFile(`./tokens-${type}.json`, {
             encoding: "utf-8",
         }).then((x) => JSON.parse(x) as AccessToken);
 
         if (!authToken.accessToken) {
-            return false;
+            return undefined;
         }
 
-        return new RefreshingAuthProvider(
-            {
-                clientId,
-                clientSecret,
-                onRefresh: async (tokenData) => saveToken(type, tokenData),
-            },
-            authToken
+        authMap.set(
+            type,
+            new RefreshingAuthProvider(
+                {
+                    clientId,
+                    clientSecret,
+                    onRefresh: async (tokenData) => saveToken(type, tokenData),
+                },
+                authToken
+            )
         );
+
+        return authMap.get(type);
     } catch (e) {
         console.log(
             `Не удалось получить данные для "${type}" токена, ошибка: ${e}`
         );
-        return false;
+        return undefined;
     }
 };
 
