@@ -1,6 +1,22 @@
+import { ApiClient } from "@twurple/api";
 import ChatMessage from "../client/ChatMessage";
 import Client from "../client/Client";
 import { getAuthProvider, getAuthLink } from "../common/auth";
+
+let apiClient: ApiClient;
+
+export const getApiClient = async (): Promise<ApiClient | undefined> => {
+    if (!apiClient) {
+        const authProvider = await getAuthProvider("user");
+        if (!authProvider) {
+            console.log(`Пользовательский токен не установлен!`);
+            return undefined;
+        }
+
+        apiClient = new ApiClient({ authProvider });
+    }
+    return apiClient;
+};
 
 export const loadTwitchTokens = async (): Promise<boolean> => {
     const [userAuthProvider, botAuthProvider] = await Promise.all([
@@ -30,6 +46,10 @@ export const loadTwitchTokens = async (): Promise<boolean> => {
         prefix: process.env.PREFIX || "!",
         commandsFolder: "../commands",
         actionsFolder: "../actions",
+    });
+
+    const apiClient = new ApiClient({
+        authProvider: userAuthProvider,
     });
 
     chatClient.onMessage(async (channel, _, text, message) => {

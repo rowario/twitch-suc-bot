@@ -21,6 +21,7 @@
     },
     "dependencies": {
         "@prisma/client": "^4.2.1",
+        "@twurple/api": "^5.2.2",
         "@twurple/auth": "^5.2.1",
         "@twurple/chat": "^5.2.1",
         "@twurple/pubsub": "^5.2.1",
@@ -28,6 +29,7 @@
         "dotenv": "^16.0.1",
         "express": "^4.18.1",
         "lodash": "^4.17.21",
+        "moment": "^2.29.4",
         "rcon-client": "^4.2.3"
     }
 }
